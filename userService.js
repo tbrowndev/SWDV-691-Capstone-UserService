@@ -122,14 +122,15 @@ app.get('/users/:id/feed', function (req, res) {
  */
 
 app.get('/users/:id', function (req, res) {
-    let user = req.body.id;
+    let user = req.params.id;
+    console.log("Getting User Information for " + user);
     try {
         let post_query = "CALL Get_user_information("+user+")";
         connection.query(post_query, function(err, result){
             if(err){throw err}
             else{
-                let current_user = new User(result.id, result.full_name, result.email, result.phone, result.username);
-                res.sendStatus(200).send(current_user);
+                let current_user = new User(result[0][0].id, result[0][0].full_name, result[0][0].email, result[0][0].phone, result[0][0].username);
+                res.send(current_user);
             }
         })
     } catch (err) {

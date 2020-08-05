@@ -64,27 +64,26 @@ console.log("User Service listening on port  - ", (process.env.USER_PORT || 6220
  * return: list of user groups (id, name, description, goal)
  *
  */
-app.get('/users/groups', function (req, res) {
+app.get('/users/:id/groups', function (req, res) {
 
-    group_search_results = [];
-    search_term = req.body.search_term;
+    let user = req.body.id;
+    user_groups = []
     try {
-        let search_query = "SELECT `id`, `name`, `description`, `goal`, `adminId` FROM `groups` WHERE `name` LIKE '%" + search_term + "%'";
-        connection.query(search_query, function (err, result) {
-            if (err) { throw err }
-            else {
-
-                result.forEach(group => {
-                    let found_group = new Group(group.id, group.name, group.description, group.goal, group.adminId);
-                    group_search_results.push(found_group);
+        let query = "CALL Get_user_groups("+user+");";
+        connection.query(query, function(err, results){
+            if(err){throw err}
+            else{
+                results.forEach(group => {
+                    found_group = new Group(group.id, group.group_name, group.description, group.goal);
+                    user_groups.push(found_group);
                 });
-
-                res.sendStatus(200).send(group_search_results);
+                res.sendStatus(200).send(user_groups);
             }
         })
     } catch (err) {
-
+        
     }
+
 });
 
 /** Gets the most recent posts from groups associated with user.
@@ -100,7 +99,7 @@ app.get('/users/:id/feed', function (req, res) {
     let user = req.body.id;
 
     try {
-        let post_query = "CALL GetUserFeedPosts("+user+");";
+        let post_query = "CALL Get_user_homefeed("+user+");";
         connection.query(post_query, function(err, result){
             if(err){throw err}
             else{
@@ -124,9 +123,8 @@ app.get('/users/:id/feed', function (req, res) {
 
 app.get('/users/:id', function (req, res) {
     let user = req.body.id;
-
     try {
-        let post_query = "SELECT * FROM users WHERE id="+user+";";
+        let post_query = "CALL Get_user_information("+user+")";
         connection.query(post_query, function(err, result){
             if(err){throw err}
             else{
@@ -149,12 +147,11 @@ app.get('/users/:id', function (req, res) {
  */
 class Group {
     
-    constructor(id, name, description, goal, adminid) {
+    constructor(id, name, description, goal) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.goal = goal;
-        this.adminid = adminid;
     }
 
 }

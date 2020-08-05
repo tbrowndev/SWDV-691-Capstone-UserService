@@ -11,7 +11,7 @@ var cors = require('cors');
 
 // Configuration
 var connection;
-const db_config = process.env.CLEARDB_DATABASE_URL;
+const db_config = require('../db_config.json');;
 
 app.use(bodyParser.urlencoded({ 'extended': 'true' }));
 app.use(bodyParser.json());
@@ -128,7 +128,7 @@ app.get('/users/:id', function (req, res) {
         connection.query(post_query, function(err, result){
             if(err){throw err}
             else{
-                let current_user = new User(result.id, result.name, result.email, result.phone);
+                let current_user = new User(result.id, result.full_name, result.email, result.phone, result.username);
                 res.sendStatus(200).send(current_user);
             }
         })
@@ -177,11 +177,12 @@ class Post {
  */
 class User{
 
-    constructor(id, name, email, phone){
+    constructor(id, name, email, phone, username){
         this.id = id;
         this.name = name;
         this.email = email;
         this.phone = phone;
+        this.username = username;
     }
     
 }

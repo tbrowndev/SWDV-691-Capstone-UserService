@@ -66,7 +66,7 @@ console.log("User Service listening on port  - ", (process.env.USER_PORT || 6220
  */
 app.get('/users/:id/groups', function (req, res) {
 
-    let user = req.body.id;
+    let user = req.params.id;
     user_groups = []
     try {
         let query = "CALL Get_user_groups("+user+");";

@@ -67,24 +67,47 @@ console.log("User Service listening on port  - ", (process.env.USER_PORT || 6220
 app.get('/users/:id/groups', function (req, res) {
 
     let user = req.params.id;
-    user_groups = []
+    var user_groups = []
     try {
         let query = "CALL Get_user_groups("+user+");";
         connection.query(query, function(err, results){
             if(err){throw err}
             else{
-                results.forEach(group => {
-                    found_group = new Group(group.id, group.group_name, group.description, group.goal);
-                    user_groups.push(found_group);
-                });
-                res.sendStatus(200).send(user_groups);
+                if(results[0].length > 0){
+                    results[0].forEach(group => {
+                        let found_group = new Group(group.id, group.group_name, group.description, group.goal);
+                        user_groups.push(found_group);
+                    });
+                }
+                res.send({status: 200, groups: user_groups});
             }
         })
     } catch (err) {
         
     }
-
 });
+
+/**Verify if a user is a member in a group
+ * 
+ * Params: userId
+ * return true if user is a members an false otherwise
+ * 
+ */
+app.get('/users/:id/groups/verify/:group', function(req, res){
+    let user = req.params.id;
+    let group = req.params.group;
+    try {
+        let query = "CALL Check_user_membership("+user+", "+group+");";
+        connection.query(query, function(err, result){
+            if(err){throw err }
+            else{
+                res.send({isMember: result[0][0].isMember});
+            }
+        })
+    } catch (err) {
+        
+    }
+})
 
 /** Gets the most recent posts from groups associated with user.
  * look at most recent post in the last 30 days per group

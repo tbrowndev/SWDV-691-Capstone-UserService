@@ -185,13 +185,14 @@ class Group {
  */
 class Post {
 
-    constructor(id, group_id, group, member, post, timestamp){
+    constructor(id, group_id, group_name, user_name, username, post, date){
         this.id = id;
-        this.group_id = group_id;
-        this.group = group;
-        this.member = member;
-        this.post = post;
-        this.timestamp = timestamp;
+        this.groupId = group_id;
+        this.groupName = group_name;
+        this.user = user_name;
+        this.username = username;
+        this.post = post
+        this.creationDate = date;
     }
 
 }

@@ -46,7 +46,8 @@ function handleDisconnect() {
         }
         else {
             console.log(err);
-            console.log("User Service no longer has a connection to db")
+            console.log("User Service no longer has a connection to db");
+            handleDisconnect();;
         }
     });
 }
@@ -126,11 +127,11 @@ app.get('/users/:id/feed', function (req, res) {
         connection.query(post_query, function(err, result){
             if(err){throw err}
             else{
-                result.forEach(post => {
+                result[0].forEach(post => {
                     var feed_posts = new Post(post.id, post.group_id, post.group_name, post.member_name, post.post, post.timestamp);
                     home_feed.push(feed_posts);
                 })
-                res.sendStatus(200).send(feed_posts);
+                res.send({status:200, posts:feed_posts});
             }
         })
     } catch (err) {

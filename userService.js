@@ -128,10 +128,10 @@ app.get('/users/:id/feed', function (req, res) {
             if(err){console.log(err)}
             else{
                 result[0].forEach(post => {
-                    var feed_posts = new Post(post.id, post.group_id, post.group_name, post.member_name, post.post, post.timestamp);
+                    let feed_posts = new Post(post.id, post.group_id, post.group_name, post.member_name, post.post, post.timestamp);
                     home_feed.push(feed_posts);
                 })
-                res.send({status:200, posts:feed_posts});
+                res.send({status:200, posts:home_feed});
             }
         })
     } catch (err) {

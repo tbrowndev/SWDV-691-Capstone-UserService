@@ -72,7 +72,7 @@ app.get('/users/:id/groups', function (req, res) {
     try {
         let query = "CALL Get_user_groups("+user+");";
         connection.query(query, function(err, results){
-            if(err){throw err}
+            if(err){console.log(err)}
             else{
                 if(results[0].length > 0){
                     results[0].forEach(group => {
@@ -100,7 +100,7 @@ app.get('/users/:id/groups/verify/:group', function(req, res){
     try {
         let query = "CALL Check_user_membership("+user+", "+group+");";
         connection.query(query, function(err, result){
-            if(err){throw err }
+            if(err){console.log(err) }
             else{
                 res.send({isMember: result[0][0].isMember});
             }
@@ -121,11 +121,11 @@ app.get('/users/:id/feed', function (req, res) {
     
     let home_feed = [];
     let user = req.params.id;
-
+    console.log("Getting Timeline for " + user);
     try {
         let post_query = "CALL Get_user_homefeed("+user+");";
         connection.query(post_query, function(err, result){
-            if(err){throw err}
+            if(err){console.log(err)}
             else{
                 result[0].forEach(post => {
                     var feed_posts = new Post(post.id, post.group_id, post.group_name, post.member_name, post.post, post.timestamp);
@@ -151,7 +151,7 @@ app.get('/users/:id', function (req, res) {
     try {
         let post_query = "CALL Get_user_information("+user+")";
         connection.query(post_query, function(err, result){
-            if(err){throw err}
+            if(err){console.log(err)}
             else{
                 let current_user = new User(result[0][0].id, result[0][0].full_name, result[0][0].email, result[0][0].phone, result[0][0].username);
                 res.send(current_user);

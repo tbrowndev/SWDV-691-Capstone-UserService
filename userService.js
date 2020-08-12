@@ -123,7 +123,7 @@ app.get('/users/:id/feed', function (req, res) {
     let user = req.params.id;
     console.log("Getting Timeline for " + user);
     try {
-        let post_query = "CALL Get_user_homefeed("+user+");";
+        let post_query = "CALL Get_user_homefeed("+user+")";
         connection.query(post_query, function(err, result){
             if(err){console.log(err)}
             else{

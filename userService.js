@@ -84,7 +84,7 @@ app.get('/users/:id/groups', function (req, res) {
             }
         })
     } catch (err) {
-        
+        console.log(err);
     }
 });
 
@@ -106,7 +106,7 @@ app.get('/users/:id/groups/verify/:group', function(req, res){
             }
         })
     } catch (err) {
-        
+        console.log(err);
     }
 })
 
@@ -120,7 +120,7 @@ app.get('/users/:id/groups/verify/:group', function(req, res){
 app.get('/users/:id/feed', function (req, res) {
     
     let home_feed = [];
-    let user = req.body.id;
+    let user = req.params.id;
 
     try {
         let post_query = "CALL Get_user_homefeed("+user+");";
@@ -135,7 +135,7 @@ app.get('/users/:id/feed', function (req, res) {
             }
         })
     } catch (err) {
-
+        console.log(err);
     }
 });
 
@@ -158,7 +158,7 @@ app.get('/users/:id', function (req, res) {
             }
         })
     } catch (err) {
-
+        console.log(err);
     }
 });
 

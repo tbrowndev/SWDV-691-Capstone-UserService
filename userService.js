@@ -90,7 +90,7 @@ app.get('/users/:id/groups', function (req, res) {
 
 /**Verify if a user is a member in a group
  * 
- * Params: userId
+ * Params: userId, group id
  * return true if user is a members an false otherwise
  * 
  */

@@ -70,17 +70,17 @@ app.get('/users/:id/groups', function (req, res) {
     let user = req.params.id;
     var user_groups = []
     try {
-        let query = "CALL Get_user_groups("+user+");";
-        connection.query(query, function(err, results){
-            if(err){console.log(err)}
-            else{
-                if(results[0].length > 0){
+        let query = "CALL Get_user_groups(" + user + ");";
+        connection.query(query, function (err, results) {
+            if (err) { console.log(err) }
+            else {
+                if (results[0].length > 0) {
                     results[0].forEach(group => {
                         let found_group = new Group(group.id, group.group_name, group.description, group.goal);
                         user_groups.push(found_group);
                     });
                 }
-                res.send({status: 200, groups: user_groups});
+                res.send({ status: 200, groups: user_groups });
             }
         })
     } catch (err) {
@@ -94,19 +94,23 @@ app.get('/users/:id/groups', function (req, res) {
  * return true if user is a members an false otherwise
  * 
  */
-app.get('/users/:id/groups/verify/:group', function(req, res){
+app.get('/users/:id/groups/verify/:group', function (req, res) {
     let user = req.params.id;
     let group = req.params.group;
     try {
-        let query = "CALL Check_user_membership("+user+", "+group+");";
-        connection.query(query, function(err, result){
-            if(err){console.log(err) }
-            else{
-                res.send({isMember: result[0][0].isMember});
+        let query = "CALL Check_user_membership(" + user + ", " + group + ");";
+        connection.query(query, function (err, result) {
+            if (err) {
+                console.log(err)
+                res.send({ status: 500, message: 'Internal Server Error' });
+            }
+            else {
+                res.send({ isMember: result[0][0].isMember });
             }
         })
     } catch (err) {
         console.log(err);
+        res.send({ status: 500, message: 'Internal Server Error' });
     }
 })
 
@@ -118,24 +122,28 @@ app.get('/users/:id/groups/verify/:group', function(req, res){
 */
 
 app.get('/users/:id/feed', function (req, res) {
-    
+
     let home_feed = [];
     let user = req.params.id;
     console.log("Getting Timeline for " + user);
     try {
-        let post_query = "CALL Get_user_homefeed("+user+")";
-        connection.query(post_query, function(err, result){
-            if(err){console.log(err)}
-            else{
+        let post_query = "CALL Get_user_homefeed(" + user + ")";
+        connection.query(post_query, function (err, result) {
+            if (err) {
+                console.log(err)
+                res.send({ status: 500, message: 'Internal Server Error' });
+            }
+            else {
                 result[0].forEach(post => {
                     let feed_posts = new Post(post.id, post.group_id, post.group_name, post.full_name, post.username, post.post, post.born_date);
                     home_feed.push(feed_posts);
                 })
-                res.send({status:200, posts:home_feed});
+                res.send({ status: 200, posts: home_feed });
             }
         })
     } catch (err) {
         console.log(err);
+        res.send({ status: 500, message: 'Internal Server Error' });
     }
 });
 
@@ -149,16 +157,20 @@ app.get('/users/:id', function (req, res) {
     let user = req.params.id;
     console.log("Getting User Information for " + user);
     try {
-        let post_query = "CALL Get_user_information("+user+")";
-        connection.query(post_query, function(err, result){
-            if(err){console.log(err)}
-            else{
+        let post_query = "CALL Get_user_information(" + user + ")";
+        connection.query(post_query, function (err, result) {
+            if (err) {
+                console.log(err)
+                res.send({ status: 500, message: 'Internal Server Error' });
+            }
+            else {
                 let current_user = new User(result[0][0].id, result[0][0].full_name, result[0][0].email, result[0][0].phone, result[0][0].username);
                 res.send(current_user);
             }
         })
     } catch (err) {
         console.log(err);
+        res.send({ status: 500, message: 'Internal Server Error' });
     }
 });
 
@@ -171,7 +183,7 @@ app.get('/users/:id', function (req, res) {
  * holds group information 
  */
 class Group {
-    
+
     constructor(id, name, description, goal) {
         this.id = id;
         this.name = name;
@@ -186,7 +198,7 @@ class Group {
  */
 class Post {
 
-    constructor(id, group_id, group_name, user_name, username, post, date){
+    constructor(id, group_id, group_name, user_name, username, post, date) {
         this.id = id;
         this.groupId = group_id;
         this.groupName = group_name;
@@ -201,14 +213,14 @@ class Post {
 /** hold user informaiton
  * 
  */
-class User{
+class User {
 
-    constructor(id, name, email, phone, username){
+    constructor(id, name, email, phone, username) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.phone = phone;
         this.username = username;
     }
-    
+
 }
